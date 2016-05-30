@@ -367,7 +367,7 @@
       if (evt.keyCode === 32) {
         evt.preventDefault();
         var needToRestartTheGame = this.state.currentStatus === Verdict.WIN ||
-            this.state.currentStatus === Verdict.FAIL;
+          this.state.currentStatus === Verdict.FAIL;
         this.initializeLevelAndStart(this.level, needToRestartTheGame);
 
         window.removeEventListener('keydown', this._pauseListener);
@@ -378,18 +378,60 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+
+      var messageStartPositionX = 300;
+      var messageStartPositionY = 50;
+      var messageWidth = 300;
+      var self = this;
+
+      function dividedPhrasePaint(phrase, baloonLength) {
+        var phraseWords = phrase.split(' ');
+        var phraseString = '';
+        var stringNumberCounter = 1;
+        baloonLength = baloonLength < 160 ? 160 : baloonLength;
+
+        // Балун с текстом и его тень
+        self.ctx.fillStyle = '#FFFFFF';
+        self.ctx.shadowOffsetX = 10.0;
+        self.ctx.shadowOffsetY = 10.0;
+        self.ctx.shadowBlur = 0.0;
+        self.ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+        self.ctx.fillRect(messageStartPositionX, messageStartPositionY, messageWidth, 150);
+
+        // Текст внутри канваса
+        self.ctx.shadowOffsetX = 0.0;
+        self.ctx.shadowOffsetY = 0.0;
+        self.ctx.font = 'normal 16px PT Mono';
+        self.ctx.fillStyle = '#000000';
+
+        for (var i = 0; i <= phraseWords.length; i++) {
+          if (i === phraseWords.length) {
+            self.ctx.fillText(phraseString, messageStartPositionX, messageStartPositionY + 30 * stringNumberCounter);
+          }
+          if ((phraseString + ' ' + phraseWords[i]).length <= (baloonLength / 12)) {
+            phraseString += ' ' + phraseWords[i];
+          } else {
+            self.ctx.fillStyle = '#000000';
+            self.ctx.fillText(phraseString, messageStartPositionX, messageStartPositionY + 30 * stringNumberCounter);
+            phraseString = '';
+            stringNumberCounter++;
+            i--;
+          }
+        }
+      }
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          dividedPhrasePaint('you have won!', messageWidth);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          dividedPhrasePaint('you have failed!', messageWidth);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          dividedPhrasePaint('game is on pause!', messageWidth);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          dividedPhrasePaint('welcome to the game! Press Space to start', messageWidth);
           break;
       }
     },
@@ -505,8 +547,8 @@
             })[0];
 
             return me.state === ObjectState.DISPOSED ?
-                Verdict.FAIL :
-                Verdict.CONTINUE;
+              Verdict.FAIL :
+              Verdict.CONTINUE;
           },
 
           /**
@@ -525,8 +567,8 @@
            */
           function checkTime(state) {
             return Date.now() - state.startTime > 3 * 60 * 1000 ?
-                Verdict.FAIL :
-                Verdict.CONTINUE;
+              Verdict.FAIL :
+              Verdict.CONTINUE;
           }
         ];
       }
@@ -574,8 +616,8 @@
         if (object.sprite) {
           var image = new Image(object.width, object.height);
           image.src = (object.spriteReversed && object.direction & Direction.LEFT) ?
-              object.spriteReversed :
-              object.sprite;
+            object.spriteReversed :
+            object.sprite;
           this.ctx.drawImage(image, object.x, object.y, object.width, object.height);
         }
       }, this);
