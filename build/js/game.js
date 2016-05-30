@@ -387,8 +387,24 @@
       function dividedPhrasePaint(phrase, baloonLength) {
         var phraseWords = phrase.split(' ');
         var phraseString = '';
+        var phraseStringAll = [];
         var stringNumberCounter = 1;
         baloonLength = baloonLength < 160 ? 160 : baloonLength;
+
+        for (var i = 0; i <= phraseWords.length; i++) {
+          if (i === phraseWords.length) {
+            phraseStringAll.push(phraseString);
+          } else {
+            if ((phraseString + ' ' + phraseWords[i]).length <= (baloonLength / 12)) {
+              phraseString += ' ' + phraseWords[i];
+            } else {
+              phraseStringAll.push(phraseString);
+              phraseString = '';
+              stringNumberCounter++;
+              i--;
+            }
+          }
+        }
 
         // Балун с текстом и его тень
         self.ctx.fillStyle = '#FFFFFF';
@@ -396,27 +412,16 @@
         self.ctx.shadowOffsetY = 10.0;
         self.ctx.shadowBlur = 0.0;
         self.ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-        self.ctx.fillRect(messageStartPositionX, messageStartPositionY, messageWidth, 150);
+        self.ctx.fillRect(messageStartPositionX, messageStartPositionY, messageWidth, (stringNumberCounter + 1) * 30);
 
-        // Текст внутри канваса
+        // Текст внутри балуна
         self.ctx.shadowOffsetX = 0.0;
         self.ctx.shadowOffsetY = 0.0;
         self.ctx.font = 'normal 16px PT Mono';
         self.ctx.fillStyle = '#000000';
 
-        for (var i = 0; i <= phraseWords.length; i++) {
-          if (i === phraseWords.length) {
-            self.ctx.fillText(phraseString, messageStartPositionX, messageStartPositionY + 30 * stringNumberCounter);
-          }
-          if ((phraseString + ' ' + phraseWords[i]).length <= (baloonLength / 12)) {
-            phraseString += ' ' + phraseWords[i];
-          } else {
-            self.ctx.fillStyle = '#000000';
-            self.ctx.fillText(phraseString, messageStartPositionX, messageStartPositionY + 30 * stringNumberCounter);
-            phraseString = '';
-            stringNumberCounter++;
-            i--;
-          }
+        for (i = 0; i < phraseStringAll.length; i++) {
+          self.ctx.fillText(phraseStringAll[i], messageStartPositionX, messageStartPositionY + 30 * (i + 1));
         }
       }
 
