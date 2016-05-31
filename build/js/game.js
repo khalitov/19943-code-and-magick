@@ -379,51 +379,99 @@
      */
     _drawPauseScreen: function() {
 
+      var self = this;
+      var stringNumberCounter = 1;
+      // Координаты вывода сообщения
       var messageStartPositionX = 300;
       var messageStartPositionY = 50;
       var messageWidth = 300;
-      var self = this;
 
-      function dividedPhrasePaint(phrase, baloonLength) {
-        var phraseWords = phrase.split(' ');
-        var phraseString = '';
+      // Параметры высоты линии и ширины символов текста
+      var LINE_HEIGHT = 30;
+      var SYMBOL_WIDTH = 8;
+
+      // Параметры вывода текстового балуна
+      var baloonBackground = '#FFFFFF';
+      var shadowOffsetX = 10;
+      var shadowOffsetY = 10;
+      var shadowBlur = 0;
+      var shadowColor = 'rgba(0, 0, 0, 0.7)';
+
+      // Параметры вывода текста
+      var textFont = 'normal 16px PT Mono';
+      var textColor = '#000000';
+      var textOffsetX = 10;
+
+
+      function dividedPhrasePaint(phrase, width) {
+        var phraseInWords = phrase.split(' ');
+        var divededPhrase = dividePhraseToArray(phraseInWords, width / SYMBOL_WIDTH);
+        paintRect(messageStartPositionX, messageStartPositionY, messageWidth, divededPhrase.height, baloonBackground, shadowOffsetX, shadowOffsetY, shadowBlur, shadowColor);
+        paintText(divededPhrase.phraseInArray, messageStartPositionX, messageStartPositionY, textFont, textColor);
+      }
+
+      function dividePhraseToArray(arrayWithPhraseWords, width) {
+        var divededPhrase = {};
         var phraseStringAll = [];
-        var stringNumberCounter = 1;
-        baloonLength = baloonLength < 160 ? 160 : baloonLength;
 
-        for (var i = 0; i <= phraseWords.length; i++) {
-          if (i === phraseWords.length) {
-            phraseStringAll.push(phraseString);
+        var stringCombainer = '' + arrayWithPhraseWords[0];
+        for (var i = 1; i < arrayWithPhraseWords.length; i++) {
+          if ((stringCombainer + ' ' + arrayWithPhraseWords[i]).length <= width) {
+            stringCombainer += ' ' + arrayWithPhraseWords[i];
           } else {
-            if ((phraseString + ' ' + phraseWords[i]).length <= (baloonLength / 12)) {
-              phraseString += ' ' + phraseWords[i];
-            } else {
-              phraseStringAll.push(phraseString);
-              phraseString = '';
-              stringNumberCounter++;
-              i--;
-            }
+            phraseStringAll.push(stringCombainer);
+            stringCombainer = arrayWithPhraseWords[i];
+            stringNumberCounter++;
           }
         }
+        if (stringCombainer) {
+          phraseStringAll.push(stringCombainer);
+          stringNumberCounter++;
+        }
+        divededPhrase.phraseInArray = phraseStringAll;
+        divededPhrase.height = stringNumberCounter;
+        return divededPhrase;
+      }
 
-        // Балун с текстом и его тень
-        self.ctx.fillStyle = '#FFFFFF';
-        self.ctx.shadowOffsetX = 10.0;
-        self.ctx.shadowOffsetY = 10.0;
-        self.ctx.shadowBlur = 0.0;
-        self.ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-        self.ctx.fillRect(messageStartPositionX, messageStartPositionY, messageWidth, (stringNumberCounter + 1) * 30);
+      function paintText(phraseInArray, startPositionX, startPositionY, textFont, textColor) {
 
-        // Текст внутри балуна
-        self.ctx.shadowOffsetX = 0.0;
-        self.ctx.shadowOffsetY = 0.0;
-        self.ctx.font = 'normal 16px PT Mono';
-        self.ctx.fillStyle = '#000000';
+        phraseInArray = phraseInArray || ['Здесь должна была', ' быть какая-то фраза'];
+        startPositionX = startPositionX || messageStartPositionX;
+        startPositionY = startPositionY || messageStartPositionY;
+        textFont = textFont || 'normal 16px PT Mono';
+        textColor = textColor || '#000000';
 
-        for (i = 0; i < phraseStringAll.length; i++) {
-          self.ctx.fillText(phraseStringAll[i], messageStartPositionX, messageStartPositionY + 30 * (i + 1));
+        self.ctx.font = textFont;
+        self.ctx.fillStyle = textColor;
+        for (var i = 0; i < phraseInArray.length; i++) {
+          self.ctx.fillText(phraseInArray[i], startPositionX + textOffsetX, startPositionY + LINE_HEIGHT * (i + 1));
         }
       }
+
+      function paintRect(startPositionX, startPositionY, width, heightInLines, baloonBackground, shadowOffsetX, shadowOffsetY, shadowBlur, shadowColor) {
+
+        startPositionX = startPositionX || messageStartPositionX;
+        startPositionY = startPositionY || messageStartPositionY;
+        width = width || messageWidth;
+        heightInLines = heightInLines || 4;
+        baloonBackground = baloonBackground || '#FFFFFF';
+        shadowOffsetX = shadowOffsetX || 10;
+        shadowOffsetY = shadowOffsetY || 10;
+        shadowBlur = shadowBlur || 0;
+        shadowColor = shadowColor || 'rgba(0, 0, 0, 0.7)';
+
+        self.ctx.fillStyle = baloonBackground;
+        self.ctx.shadowOffsetX = shadowOffsetX;
+        self.ctx.shadowOffsetY = shadowOffsetY;
+        self.ctx.shadowBlur = shadowBlur;
+        self.ctx.shadowColor = shadowColor;
+        self.ctx.fillRect(startPositionX, startPositionY, width, heightInLines * LINE_HEIGHT);
+        //Сброс теней
+        self.ctx.shadowOffsetX = 0;
+        self.ctx.shadowOffsetY = 0;
+        self.ctx.shadowBlur = 0;
+      }
+
 
       switch (this.state.currentStatus) {
         case Verdict.WIN:
