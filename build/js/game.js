@@ -380,7 +380,7 @@
     _drawPauseScreen: function() {
 
       var self = this;
-      var stringNumberCounter = 1;
+      // var stringNumberCounter = 1;
       // Координаты вывода сообщения
       var messageStartPositionX = 300;
       var messageStartPositionY = 50;
@@ -402,19 +402,20 @@
       var textColor = '#000000';
       var textOffsetX = 10;
 
+      // Параметры начала текста и пустого пространства внизу текстового балуна
+      var startStringCount = 1;
 
       function dividedPhrasePaint(phrase, width) {
         var phraseInWords = phrase.split(' ');
         var symbolsPerString = width / SYMBOL_WIDTH;
         var dividedPhrase = dividePhraseToArray(phraseInWords, symbolsPerString);
-        paintRect(dividedPhrase.height);
-        paintText(dividedPhrase.phraseInArray);
+        var baloonHeight = dividedPhrase.length + startStringCount;
+        paintRect(baloonHeight);
+        paintText(dividedPhrase);
       }
 
       function dividePhraseToArray(arrayWithPhraseWords, symbolsPerString) {
-        var dividedPhrase = {};
         var phraseStringAll = [];
-
         var stringCombainer = arrayWithPhraseWords[0];
         for (var i = 1; i < arrayWithPhraseWords.length; i++) {
           if ((stringCombainer + ' ' + arrayWithPhraseWords[i]).length <= symbolsPerString) {
@@ -422,33 +423,25 @@
           } else {
             phraseStringAll.push(stringCombainer);
             stringCombainer = arrayWithPhraseWords[i];
-            stringNumberCounter++;
           }
         }
         if (stringCombainer) {
           phraseStringAll.push(stringCombainer);
-          stringNumberCounter++;
         }
-        dividedPhrase.phraseInArray = phraseStringAll;
-        dividedPhrase.height = stringNumberCounter;
-        return dividedPhrase;
+        return phraseStringAll;
       }
 
       function paintText(phraseInArray) {
-
         phraseInArray = phraseInArray || ['Здесь должна была', ' быть какая-то фраза'];
-
         self.ctx.font = textFont;
         self.ctx.fillStyle = textColor;
         for (var i = 0; i < phraseInArray.length; i++) {
-          self.ctx.fillText(phraseInArray[i], messageStartPositionX + textOffsetX, messageStartPositionY + LINE_HEIGHT * (i + 1));
+          self.ctx.fillText(phraseInArray[i], messageStartPositionX + textOffsetX, messageStartPositionY + LINE_HEIGHT * (i + startStringCount));
         }
       }
 
       function paintRect(heightInLines) {
-
         heightInLines = heightInLines || 4;
-
         self.ctx.fillStyle = baloonBackground;
         self.ctx.shadowOffsetX = shadowOffsetX;
         self.ctx.shadowOffsetY = shadowOffsetY;
