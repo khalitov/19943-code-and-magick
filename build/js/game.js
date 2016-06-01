@@ -367,7 +367,7 @@
       if (evt.keyCode === 32) {
         evt.preventDefault();
         var needToRestartTheGame = this.state.currentStatus === Verdict.WIN ||
-            this.state.currentStatus === Verdict.FAIL;
+          this.state.currentStatus === Verdict.FAIL;
         this.initializeLevelAndStart(this.level, needToRestartTheGame);
 
         window.removeEventListener('keydown', this._pauseListener);
@@ -378,18 +378,95 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+
+      var self = this;
+      // var stringNumberCounter = 1;
+      // Координаты вывода сообщения
+      var messageStartPositionX = 300;
+      var messageStartPositionY = 50;
+      var messageWidth = 300;
+
+      // Параметры высоты линии и ширины символов текста
+      var LINE_HEIGHT = 30;
+      var SYMBOL_WIDTH = 12;
+
+      // Параметры вывода текстового балуна
+      var baloonBackground = '#FFFFFF';
+      var shadowOffsetX = 10;
+      var shadowOffsetY = 10;
+      var shadowBlur = 0;
+      var shadowColor = 'rgba(0, 0, 0, 0.7)';
+
+      // Параметры вывода текста
+      var textFont = 'normal 16px PT Mono';
+      var textColor = '#000000';
+      var textOffsetX = 10;
+
+      // Параметры начала текста и пустого пространства внизу текстового балуна
+      var startStringCount = 1;
+
+      function dividedPhrasePaint(phrase, width) {
+        var phraseInWords = phrase.split(' ');
+        var symbolsPerString = width / SYMBOL_WIDTH;
+        var dividedPhrase = dividePhraseToArray(phraseInWords, symbolsPerString);
+        var baloonHeight = dividedPhrase.length + startStringCount;
+        paintRect(baloonHeight);
+        paintText(dividedPhrase);
+      }
+
+      function dividePhraseToArray(arrayWithPhraseWords, symbolsPerString) {
+        var phraseStringAll = [];
+        var stringCombiner = arrayWithPhraseWords[0];
+        for (var i = 1; i < arrayWithPhraseWords.length; i++) {
+          if ((stringCombiner + ' ' + arrayWithPhraseWords[i]).length <= symbolsPerString) {
+            stringCombiner += ' ' + arrayWithPhraseWords[i];
+          } else {
+            phraseStringAll.push(stringCombiner);
+            stringCombiner = arrayWithPhraseWords[i];
+          }
+        }
+        if (stringCombiner) {
+          phraseStringAll.push(stringCombiner);
+        }
+        return phraseStringAll;
+      }
+
+      function paintText(phraseInArray) {
+        phraseInArray = phraseInArray || ['Здесь должна была', ' быть какая-то фраза'];
+        self.ctx.font = textFont;
+        self.ctx.fillStyle = textColor;
+        for (var i = 0; i < phraseInArray.length; i++) {
+          self.ctx.fillText(phraseInArray[i], messageStartPositionX + textOffsetX, messageStartPositionY + LINE_HEIGHT * (i + startStringCount));
+        }
+      }
+
+      function paintRect(heightInLines) {
+        heightInLines = heightInLines || 4;
+        self.ctx.fillStyle = baloonBackground;
+        self.ctx.shadowOffsetX = shadowOffsetX;
+        self.ctx.shadowOffsetY = shadowOffsetY;
+        self.ctx.shadowBlur = shadowBlur;
+        self.ctx.shadowColor = shadowColor;
+        self.ctx.fillRect(messageStartPositionX, messageStartPositionY, messageWidth, heightInLines * LINE_HEIGHT);
+        //Сброс теней
+        self.ctx.shadowOffsetX = 0;
+        self.ctx.shadowOffsetY = 0;
+        self.ctx.shadowBlur = 0;
+      }
+
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          dividedPhrasePaint('you have won!', messageWidth);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          dividedPhrasePaint('you have failed!', messageWidth);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          dividedPhrasePaint('game is on pause!', messageWidth);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          dividedPhrasePaint('welcome to the game! Press Space to start', messageWidth);
           break;
       }
     },
@@ -505,8 +582,8 @@
             })[0];
 
             return me.state === ObjectState.DISPOSED ?
-                Verdict.FAIL :
-                Verdict.CONTINUE;
+              Verdict.FAIL :
+              Verdict.CONTINUE;
           },
 
           /**
@@ -525,8 +602,8 @@
            */
           function checkTime(state) {
             return Date.now() - state.startTime > 3 * 60 * 1000 ?
-                Verdict.FAIL :
-                Verdict.CONTINUE;
+              Verdict.FAIL :
+              Verdict.CONTINUE;
           }
         ];
       }
@@ -574,8 +651,8 @@
         if (object.sprite) {
           var image = new Image(object.width, object.height);
           image.src = (object.spriteReversed && object.direction & Direction.LEFT) ?
-              object.spriteReversed :
-              object.sprite;
+            object.spriteReversed :
+            object.sprite;
           this.ctx.drawImage(image, object.x, object.y, object.width, object.height);
         }
       }, this);
