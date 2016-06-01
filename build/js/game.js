@@ -416,17 +416,17 @@
 
       function dividePhraseToArray(arrayWithPhraseWords, symbolsPerString) {
         var phraseStringAll = [];
-        var stringCombainer = arrayWithPhraseWords[0];
+        var stringCombiner = arrayWithPhraseWords[0];
         for (var i = 1; i < arrayWithPhraseWords.length; i++) {
-          if ((stringCombainer + ' ' + arrayWithPhraseWords[i]).length <= symbolsPerString) {
-            stringCombainer += ' ' + arrayWithPhraseWords[i];
+          if ((stringCombiner + ' ' + arrayWithPhraseWords[i]).length <= symbolsPerString) {
+            stringCombiner += ' ' + arrayWithPhraseWords[i];
           } else {
-            phraseStringAll.push(stringCombainer);
-            stringCombainer = arrayWithPhraseWords[i];
+            phraseStringAll.push(stringCombiner);
+            stringCombiner = arrayWithPhraseWords[i];
           }
         }
-        if (stringCombainer) {
-          phraseStringAll.push(stringCombainer);
+        if (stringCombiner) {
+          phraseStringAll.push(stringCombiner);
         }
         return phraseStringAll;
       }
