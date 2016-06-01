@@ -388,7 +388,7 @@
 
       // Параметры высоты линии и ширины символов текста
       var LINE_HEIGHT = 30;
-      var SYMBOL_WIDTH = 8;
+      var SYMBOL_WIDTH = 12;
 
       // Параметры вывода текстового балуна
       var baloonBackground = '#FFFFFF';
@@ -405,19 +405,19 @@
 
       function dividedPhrasePaint(phrase, width) {
         var phraseInWords = phrase.split(' ');
-        var widthInSymbols = width / SYMBOL_WIDTH;
-        var divededPhrase = dividePhraseToArray(phraseInWords, widthInSymbols);
-        paintRect(divededPhrase.height);
-        paintText(divededPhrase.phraseInArray);
+        var symbolsPerString = width / SYMBOL_WIDTH;
+        var dividedPhrase = dividePhraseToArray(phraseInWords, symbolsPerString);
+        paintRect(dividedPhrase.height);
+        paintText(dividedPhrase.phraseInArray);
       }
 
-      function dividePhraseToArray(arrayWithPhraseWords, widthInSymbols) {
-        var divededPhrase = {};
+      function dividePhraseToArray(arrayWithPhraseWords, symbolsPerString) {
+        var dividedPhrase = {};
         var phraseStringAll = [];
 
-        var stringCombainer = '' + arrayWithPhraseWords[0];
+        var stringCombainer = arrayWithPhraseWords[0];
         for (var i = 1; i < arrayWithPhraseWords.length; i++) {
-          if ((stringCombainer + ' ' + arrayWithPhraseWords[i]).length <= widthInSymbols) {
+          if ((stringCombainer + ' ' + arrayWithPhraseWords[i]).length <= symbolsPerString) {
             stringCombainer += ' ' + arrayWithPhraseWords[i];
           } else {
             phraseStringAll.push(stringCombainer);
@@ -429,9 +429,9 @@
           phraseStringAll.push(stringCombainer);
           stringNumberCounter++;
         }
-        divededPhrase.phraseInArray = phraseStringAll;
-        divededPhrase.height = stringNumberCounter;
-        return divededPhrase;
+        dividedPhrase.phraseInArray = phraseStringAll;
+        dividedPhrase.height = stringNumberCounter;
+        return dividedPhrase;
       }
 
       function paintText(phraseInArray) {
