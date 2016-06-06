@@ -40,7 +40,7 @@
   }
 
   function setRequire(mark, requireInput) {
-    if (mark.type == typeForMarks) {
+    if (mark.type === typeForMarks) {
       requireInput.required = (mark.value < lowestMark) ? true : false;
     }
   }
