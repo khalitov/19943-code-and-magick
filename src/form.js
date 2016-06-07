@@ -1,6 +1,8 @@
 'use strict';
 
 (function() {
+  var browserCookies = require('browser-cookies');
+  var form = document.querySelector('.review-form');
   var formContainer = document.querySelector('.overlay-container');
   var formOpenButton = document.querySelector('.reviews-controls-new');
   var formCloseButton = document.querySelector('.review-form-close');
@@ -19,9 +21,49 @@
   var eventForTextInputs = 'input';
   var eventForMarks = 'click';
   var typeForMarks = 'radio';
-
   var displayForValidElem = 'none';
   var displayForNonValidElem = 'inline-block';
+
+  var birthDate = new Date(1987, 5, 6);
+  var currentDate = new Date();
+  var ExpireDate;
+  var monthDiff = birthDate.getMonth() - currentDate.getMonth();
+  var dayDiff = birthDate.getDate() - currentDate.getDate();
+  var lastBirthdayDate = new Date(currentDate.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+
+  if (monthDiff < 0) {
+    ExpireDate = new Date(dateIncrease());
+  } else if (monthDiff > 0) {
+    lastBirthdayDate.setFullYear(lastBirthdayDate.getFullYear() - 1);
+    ExpireDate = new Date(dateIncrease());
+  } else if (dayDiff < 0) {
+    ExpireDate = new Date(dateIncrease());
+  } else {
+    lastBirthdayDate.setFullYear(lastBirthdayDate.getFullYear() - 1);
+    ExpireDate = new Date(dateIncrease());
+  }
+
+  form.onsubmit = function() {
+    var checkedMark = document.querySelector('[name="review-mark"]:checked');
+    browserCookies.set('checkedMark', checkedMark.value, {
+      expires: ExpireDate
+    });
+    browserCookies.set('username', username.value, {
+      expires: ExpireDate
+    });
+  };
+
+  username.value = browserCookies.get('username') || '';
+  if (browserCookies.get('checkedMark')) {
+    reviewMarks[browserCookies.get('checkedMark') - 1].checked = true;
+  } else {
+    reviewMarks[2].checked = true;
+  }
+
+  function dateIncrease() {
+    return 2 * currentDate - lastBirthdayDate;
+  }
+
 
   username.required = true;
   submitButton.disabled = true;
