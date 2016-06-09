@@ -13,17 +13,19 @@
   var reminders = [formReminderName, formReminderReview, formReminderBlock];
   var submitButton = document.querySelector('.review-submit');
   var reviewMarks = document.querySelectorAll('[id^="review-mark"]');
+  var reviewMarksLength = reviewMarks.length;
   var lowestPositiveMark = 3;
   var inputsValid = true;
   var validWatcher = [];
+  var initMark = reviewMarks[2];
 
   var displayType = 'none';
   var displayForNonValidElem = 'inline-block';
 
   username.required = true;
   submitButton.disabled = true;
-
-  for (var i = 0; i < reviewMarks.length; i++) {
+  processForm();
+  for (var i = 0; i < reviewMarksLength; i++) {
     reviewMarks[i].onclick = processForm;
   }
   for (i = 0; i < inputs.length; i++) {
@@ -38,6 +40,7 @@
   }
 
   function setRequire(mark, requireInput) {
+    mark = mark || initMark;
     if (mark.type === 'radio') {
       requireInput.required = mark.value < lowestPositiveMark;
     }
