@@ -13,42 +13,40 @@
   var reminders = [formReminderName, formReminderReview, formReminderBlock];
   var submitButton = document.querySelector('.review-submit');
   var reviewMarks = document.querySelectorAll('[id^="review-mark"]');
-  var lowestMark = 3;
-  var allValid = true;
+  var lowestPositiveMark = 3;
+  var inputsValid = true;
   var validWatcher = [];
-  var eventForTextInputs = 'input';
-  var eventForMarks = 'click';
-  var typeForMarks = 'radio';
 
-  var displayForValidElem = 'none';
+  var  displayType = 'none';
   var displayForNonValidElem = 'inline-block';
 
   username.required = true;
   submitButton.disabled = true;
-  hangEvent(reviewMarks, eventForMarks);
-  hangEvent(inputs, eventForTextInputs);
 
-  function hangEvent(elem, event) {
-    for (var i = 0; i < elem.length; i++) {
-      elem[i].addEventListener(event, function() {
-        setRequire(this, userReview);
-        checkValidity(inputs);
-        toggleReminder(reminders);
-        toggleBtn(submitButton);
-      });
-    }
+  for (var i = 0; i < reviewMarks.length; i++) {
+    reviewMarks[i].onclick = processForm;
+  }
+  for (var i = 0; i < inputs.length; i++) {
+    inputs[i].oninput = processForm;
+  }
+
+  function processForm() {
+    setRequire(this, userReview);
+    validate(inputs);
+    toggleReminder(reminders);
+    toggleBtn(submitButton);
   }
 
   function setRequire(mark, requireInput) {
-    if (mark.type === typeForMarks) {
-      requireInput.required = (mark.value < lowestMark) ? true : false;
+    if (mark.type === 'radio') {
+      requireInput.required = mark.value < lowestPositiveMark;
     }
   }
 
 
-  function checkValidity(inputElems) {
+  function validate(inputElems) {
     for (var i = 0; i < inputElems.length; i++) {
-      validWatcher[i] = inputElems[i].validity.valid ? true : false;
+      validWatcher[i] = inputElems[i].validity.valid;
     }
   }
 
@@ -57,22 +55,22 @@
     var falseDetector = 0;
     for (var i = 0; i < remindPiecesLength; i++) {
       if (validWatcher[i]) {
-        remindElems[i].style.display = displayForValidElem;
+        remindElems[i].style.display =  displayType;
       } else {
         remindElems[i].style.display = displayForNonValidElem;
         falseDetector++;
       }
     }
-    allValid = falseDetector ? false : true;
-    if (allValid) {
-      remindElems[remindElems.length - 1].style.display = displayForValidElem;
+    inputsValid = !falseDetector;
+    if (inputsValid) {
+      remindElems[remindElems.length - 1].style.display =  displayType;
     } else {
       remindElems[remindElems.length - 1].style.display = displayForNonValidElem;
     }
   }
 
   function toggleBtn(btn) {
-    btn.disabled = allValid ? false : true;
+    btn.disabled = !inputsValid;
   }
 
   formOpenButton.onclick = function(evt) {
