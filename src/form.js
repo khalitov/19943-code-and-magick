@@ -17,7 +17,7 @@
   var inputsValid = true;
   var validWatcher = [];
 
-  var  displayType = 'none';
+  var displayType = 'none';
   var displayForNonValidElem = 'inline-block';
 
   username.required = true;
@@ -26,7 +26,7 @@
   for (var i = 0; i < reviewMarks.length; i++) {
     reviewMarks[i].onclick = processForm;
   }
-  for (var i = 0; i < inputs.length; i++) {
+  for (i = 0; i < inputs.length; i++) {
     inputs[i].oninput = processForm;
   }
 
@@ -45,7 +45,7 @@
 
 
   function validate(inputElems) {
-    for (var i = 0; i < inputElems.length; i++) {
+    for (i = 0; i < inputElems.length; i++) {
       validWatcher[i] = inputElems[i].validity.valid;
     }
   }
@@ -53,9 +53,9 @@
   function toggleReminder(remindElems) {
     var remindPiecesLength = remindElems.length - 1;
     var falseDetector = 0;
-    for (var i = 0; i < remindPiecesLength; i++) {
+    for (i = 0; i < remindPiecesLength; i++) {
       if (validWatcher[i]) {
-        remindElems[i].style.display =  displayType;
+        remindElems[i].style.display = displayType;
       } else {
         remindElems[i].style.display = displayForNonValidElem;
         falseDetector++;
@@ -63,7 +63,7 @@
     }
     inputsValid = !falseDetector;
     if (inputsValid) {
-      remindElems[remindElems.length - 1].style.display =  displayType;
+      remindElems[remindElems.length - 1].style.display = displayType;
     } else {
       remindElems[remindElems.length - 1].style.display = displayForNonValidElem;
     }
