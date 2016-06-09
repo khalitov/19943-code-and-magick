@@ -26,16 +26,10 @@
   var birthDate = new Date(1987, 7, 29);
   var currentDate = new Date();
   var ExpireDate;
-  var monthDiff = birthDate.getMonth() - currentDate.getMonth();
-  var dayDiff = birthDate.getDate() - currentDate.getDate();
   var lastBirthdayDate = new Date(currentDate.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+  var dateDiff = lastBirthdayDate - currentDate;
 
-  if (monthDiff < 0) {
-    ExpireDate = new Date(dateIncrease());
-  } else if (monthDiff > 0) {
-    lastBirthdayDate.setFullYear(lastBirthdayDate.getFullYear() - 1);
-    ExpireDate = new Date(dateIncrease());
-  } else if (dayDiff < 0) {
+  if (dateDiff < 0) {
     ExpireDate = new Date(dateIncrease());
   } else {
     lastBirthdayDate.setFullYear(lastBirthdayDate.getFullYear() - 1);
