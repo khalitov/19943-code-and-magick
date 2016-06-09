@@ -22,7 +22,8 @@
   var initMark = reviewMarks[2];
   var displayType = 'none';
   var displayForNonValidElem = 'inline-block';
-  var birthDate = new Date(1987, 5, 6);
+
+  var birthDate = new Date(1987, 7, 29);
   var currentDate = new Date();
   var ExpireDate;
   var monthDiff = birthDate.getMonth() - currentDate.getMonth();
@@ -54,6 +55,7 @@
   username.value = browserCookies.get('username') || '';
   if (browserCookies.get('checkedMark')) {
     reviewMarks[browserCookies.get('checkedMark') - 1].checked = true;
+    initMark = reviewMarks[browserCookies.get('checkedMark') - 1];
   } else {
     reviewMarks[2].checked = true;
   }
