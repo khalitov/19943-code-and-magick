@@ -16,18 +16,16 @@
   var submitButton = document.querySelector('.review-submit');
   var reviewMarks = document.querySelectorAll('[id^="review-mark"]');
   var reviewMarksLength = reviewMarks.length;
-  var lowestPositiveMark = 3;
-  var inputsValid = true;
-  var validWatcher = [];
+  var LOWEST_POSITIVE_MARK = 3;
+  var STATUS_NON_DISPLAY = 'none';
+  var STATUS_DISPLAY = 'inline-block';
+  var BIRTH_DAY = 29;
+  var BIRTH_MONTH = 7;
   var initMark = reviewMarks[2];
-  var displayType = 'none';
-  var displayForNonValidElem = 'inline-block';
-  var birthDay = 29;
-  var birthMonth = 7;
 
   function getExpireDate() {
     var currentDate = new Date();
-    var NearestBirthDate = new Date(currentDate.getFullYear(), birthMonth, birthDay);
+    var NearestBirthDate = new Date(currentDate.getFullYear(), BIRTH_MONTH, BIRTH_DAY);
     if (NearestBirthDate - currentDate > 0) {
       NearestBirthDate.setFullYear(NearestBirthDate.getFullYear() - 1);
     }
@@ -44,9 +42,9 @@
     });
   };
 
-  setCookies();
+  loadCookies();
 
-  function setCookies() {
+  function loadCookies() {
     username.value = browserCookies.get('username') || '';
     if (browserCookies.get('checkedMark')) {
       reviewMarks[browserCookies.get('checkedMark') - 1].checked = true;
@@ -68,45 +66,43 @@
 
   function processForm() {
     setRequire(this, userReview);
-    validate(inputs);
-    toggleReminder(reminders);
-    toggleBtn(submitButton);
+    toggleReminderDisplay(reminders, inputs);
+    toggleBtnDisable(submitButton);
   }
 
   function setRequire(mark, requireInput) {
     mark = mark || initMark;
     if (mark.type === 'radio') {
-      requireInput.required = mark.value < lowestPositiveMark;
+      requireInput.required = mark.value < LOWEST_POSITIVE_MARK;
     }
   }
 
-
-  function validate(inputElems) {
-    for (i = 0; i < inputElems.length; i++) {
-      validWatcher[i] = inputElems[i].validity.valid;
-    }
-  }
-
-  function toggleReminder(remindElems) {
-    var remindPiecesLength = remindElems.length - 1;
-    inputsValid = true;
-    for (i = 0; i < remindPiecesLength; i++) {
-      if (validWatcher[i]) {
-        remindElems[i].style.display = displayType;
+  function toggleReminderDisplay(arrOfReminders, arrOfInputsToRemind) {
+    for (i = 0; i < arrOfInputsToRemind.length; i++) {
+      if (arrOfInputsToRemind[i].validity.valid) {
+        arrOfReminders[i].style.display = STATUS_NON_DISPLAY;
       } else {
-        remindElems[i].style.display = displayForNonValidElem;
-        inputsValid = false;
+        arrOfReminders[i].style.display = STATUS_DISPLAY;
       }
     }
-    if (inputsValid) {
-      remindElems[remindElems.length - 1].style.display = displayType;
+    if (checkInputsValidity(inputs)) {
+      arrOfReminders[arrOfReminders.length - 1].style.display = STATUS_NON_DISPLAY;
     } else {
-      remindElems[remindElems.length - 1].style.display = displayForNonValidElem;
+      arrOfReminders[arrOfReminders.length - 1].style.display = STATUS_DISPLAY;
     }
   }
 
-  function toggleBtn(btn) {
-    btn.disabled = !inputsValid;
+  function toggleBtnDisable(btn) {
+    btn.disabled = !checkInputsValidity(inputs);
+  }
+
+  function checkInputsValidity(arrOfInputs) {
+    for (i = 0; i < arrOfInputs.length; i++) {
+      if (!arrOfInputs[i].validity.valid) {
+        return false;
+      }
+    }
+    return true;
   }
 
   formOpenButton.onclick = function(evt) {
