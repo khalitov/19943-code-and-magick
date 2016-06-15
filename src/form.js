@@ -21,7 +21,7 @@
   var STATUS_DISPLAY = 'inline-block';
   var BIRTH_DAY = 29;
   var BIRTH_MONTH = 7;
-  var initMark = reviewMarks[2];
+  var defaultMark = reviewMarks[2];
 
   function getExpireDate() {
     var currentDate = new Date();
@@ -48,9 +48,9 @@
     username.value = browserCookies.get('username') || '';
     if (browserCookies.get('checkedMark')) {
       reviewMarks[browserCookies.get('checkedMark') - 1].checked = true;
-      initMark = reviewMarks[browserCookies.get('checkedMark') - 1];
+      defaultMark = reviewMarks[browserCookies.get('checkedMark') - 1];
     } else {
-      initMark.checked = true;
+      defaultMark.checked = true;
     }
   }
 
@@ -67,11 +67,11 @@
   function processForm() {
     setRequire(this, userReview);
     toggleReminderDisplay(reminders, inputs);
-    toggleBtnDisable(submitButton);
+    switchBtnDisabled(submitButton);
   }
 
   function setRequire(mark, requireInput) {
-    mark = mark || initMark;
+    mark = mark || defaultMark;
     if (mark.type === 'radio') {
       requireInput.required = mark.value < LOWEST_POSITIVE_MARK;
     }
@@ -79,20 +79,12 @@
 
   function toggleReminderDisplay(arrOfReminders, arrOfInputsToRemind) {
     for (i = 0; i < arrOfInputsToRemind.length; i++) {
-      if (arrOfInputsToRemind[i].validity.valid) {
-        arrOfReminders[i].style.display = STATUS_NON_DISPLAY;
-      } else {
-        arrOfReminders[i].style.display = STATUS_DISPLAY;
-      }
+      arrOfReminders[i].style.display = arrOfInputsToRemind[i].validity.valid ? STATUS_NON_DISPLAY : STATUS_DISPLAY;
     }
-    if (checkInputsValidity(inputs)) {
-      arrOfReminders[arrOfReminders.length - 1].style.display = STATUS_NON_DISPLAY;
-    } else {
-      arrOfReminders[arrOfReminders.length - 1].style.display = STATUS_DISPLAY;
-    }
+    arrOfReminders[arrOfReminders.length - 1].style.display = checkInputsValidity(inputs) ? STATUS_NON_DISPLAY : STATUS_DISPLAY;
   }
 
-  function toggleBtnDisable(btn) {
+  function switchBtnDisabled(btn) {
     btn.disabled = !checkInputsValidity(inputs);
   }
 
