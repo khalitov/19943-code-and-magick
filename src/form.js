@@ -1,6 +1,8 @@
 'use strict';
 
 (function() {
+  var browserCookies = require('browser-cookies');
+  var form = document.querySelector('.review-form');
   var formContainer = document.querySelector('.overlay-container');
   var formOpenButton = document.querySelector('.reviews-controls-new');
   var formCloseButton = document.querySelector('.review-form-close');
@@ -14,13 +16,43 @@
   var submitButton = document.querySelector('.review-submit');
   var reviewMarks = document.querySelectorAll('[id^="review-mark"]');
   var reviewMarksLength = reviewMarks.length;
-  var lowestPositiveMark = 3;
-  var inputsValid = true;
-  var validWatcher = [];
-  var initMark = reviewMarks[2];
+  var LOWEST_POSITIVE_MARK = 3;
+  var STATUS_NON_DISPLAY = 'none';
+  var STATUS_DISPLAY = 'inline-block';
+  var BIRTH_DAY = 29;
+  var BIRTH_MONTH = 7;
+  var defaultMark = reviewMarks[2];
 
-  var displayType = 'none';
-  var displayForNonValidElem = 'inline-block';
+  function getExpireDate() {
+    var currentDate = new Date();
+    var NearestBirthDate = new Date(currentDate.getFullYear(), BIRTH_MONTH, BIRTH_DAY);
+    if (NearestBirthDate - currentDate > 0) {
+      NearestBirthDate.setFullYear(NearestBirthDate.getFullYear() - 1);
+    }
+    return new Date(2 * currentDate - NearestBirthDate);
+  }
+
+  form.onsubmit = function() {
+    var checkedMark = document.querySelector('[name="review-mark"]:checked');
+    browserCookies.set('checkedMark', checkedMark.value, {
+      expires: getExpireDate()
+    });
+    browserCookies.set('username', username.value, {
+      expires: getExpireDate()
+    });
+  };
+
+  loadCookies();
+
+  function loadCookies() {
+    username.value = browserCookies.get('username') || '';
+    if (browserCookies.get('checkedMark')) {
+      reviewMarks[browserCookies.get('checkedMark') - 1].checked = true;
+      defaultMark = reviewMarks[browserCookies.get('checkedMark') - 1];
+    } else {
+      defaultMark.checked = true;
+    }
+  }
 
   username.required = true;
   submitButton.disabled = true;
@@ -34,46 +66,35 @@
 
   function processForm() {
     setRequire(this, userReview);
-    validate(inputs);
-    toggleReminder(reminders);
-    toggleBtn(submitButton);
+    toggleReminderDisplay(reminders, inputs);
+    switchBtnDisabled(submitButton);
   }
 
   function setRequire(mark, requireInput) {
-    mark = mark || initMark;
+    mark = mark || defaultMark;
     if (mark.type === 'radio') {
-      requireInput.required = mark.value < lowestPositiveMark;
+      requireInput.required = mark.value < LOWEST_POSITIVE_MARK;
     }
   }
 
-
-  function validate(inputElems) {
-    for (i = 0; i < inputElems.length; i++) {
-      validWatcher[i] = inputElems[i].validity.valid;
+  function toggleReminderDisplay(arrOfReminders, arrOfInputsToRemind) {
+    for (i = 0; i < arrOfInputsToRemind.length; i++) {
+      arrOfReminders[i].style.display = arrOfInputsToRemind[i].validity.valid ? STATUS_NON_DISPLAY : STATUS_DISPLAY;
     }
+    arrOfReminders[arrOfReminders.length - 1].style.display = checkInputsValidity(inputs) ? STATUS_NON_DISPLAY : STATUS_DISPLAY;
   }
 
-  function toggleReminder(remindElems) {
-    var remindPiecesLength = remindElems.length - 1;
-    var falseDetector = 0;
-    for (i = 0; i < remindPiecesLength; i++) {
-      if (validWatcher[i]) {
-        remindElems[i].style.display = displayType;
-      } else {
-        remindElems[i].style.display = displayForNonValidElem;
-        falseDetector++;
+  function switchBtnDisabled(btn) {
+    btn.disabled = !checkInputsValidity(inputs);
+  }
+
+  function checkInputsValidity(arrOfInputs) {
+    for (i = 0; i < arrOfInputs.length; i++) {
+      if (!arrOfInputs[i].validity.valid) {
+        return false;
       }
     }
-    inputsValid = !falseDetector;
-    if (inputsValid) {
-      remindElems[remindElems.length - 1].style.display = displayType;
-    } else {
-      remindElems[remindElems.length - 1].style.display = displayForNonValidElem;
-    }
-  }
-
-  function toggleBtn(btn) {
-    btn.disabled = !inputsValid;
+    return true;
   }
 
   formOpenButton.onclick = function(evt) {
