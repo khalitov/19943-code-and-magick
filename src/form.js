@@ -29,7 +29,7 @@
     if (NearestBirthDate - currentDate > 0) {
       NearestBirthDate.setFullYear(NearestBirthDate.getFullYear() - 1);
     }
-    return 2 * currentDate - NearestBirthDate;
+    return new Date(2 * currentDate - NearestBirthDate);
   }
 
   form.onsubmit = function() {
