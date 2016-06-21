@@ -2,3 +2,4 @@
 
 require('./form.js');
 require('./game.js');
+require('./reviews.js');
