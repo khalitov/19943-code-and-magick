@@ -109,10 +109,6 @@ function getReviewElem(data) {
   return element;
 }
 
-function appendReviewElement(element, container) {
-  container.appendChild(element);
-}
-
 //
 function setFiltrationEnabled() {
   var filters = document.querySelectorAll('[name="reviews"]');
