@@ -9,8 +9,18 @@ var elemToClone;
 var ratingMaping = ['review-rating', 'review-rating-two', 'review-rating-three', 'review-rating-four', 'review-rating-five'];
 var IMAGE_WIDTH = 124;
 var IMAGE_HEIGHT = 124;
-var MULTY_TO_GET_DAYS = 1000 * 60 * 60 * 24;
-var DAYS_TO_BE_POPULAR = 4;
+var MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
+var DAYS_TO_BE_REVIEW_RECENT = 4;
+var REVIEWS_LIST = '//o0.github.io/assets/json/reviews.json';
+var reviews = [];
+
+var Filter = {
+  'ALL': 'all',
+  'RECENT': 'reviews-recent',
+  'POPULAR': 'reviews-popular',
+  'GOOD': 'reviews-good',
+  'BAD': 'reviews-bad'
+};
 
 
 
@@ -23,15 +33,14 @@ if ('content' in reviewTemplate) {
 }
 
 getReviews(function(loadedReviews) {
-  var reviews = loadedReviews;
-  var container = reviewList;
-  setFiltrationEnabled(reviews);
-  renderReviews(reviews, container);
+  reviews = loadedReviews;
+  setFiltrationEnabled();
+  renderReviews(reviews, reviewList);
 });
 
 function getReviews(callback) {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', '//o0.github.io/assets/json/reviews.json');
+  xhr.open('GET', REVIEWS_LIST);
 
   xhr.onloadstart = function() {
     reviewBlock.classList.add('reviews-list-loading');
@@ -42,8 +51,8 @@ function getReviews(callback) {
   xhr.onload = function(evt) {
     var responseObj = evt.target;
     var response = responseObj.response;
-    var reviews = JSON.parse(response);
-    callback(reviews);
+    var loadedReviews = JSON.parse(response);
+    callback(loadedReviews);
   };
   xhr.onerror = function() {
     reviewBlock.classList.add('reviews-load-failure');
@@ -67,10 +76,8 @@ function renderReviews(reviewsArr, container) {
 }
 
 function sayNothingToShow(placeToPut) {
-  var MARGIN_FOR_TEXT = 20;
   var messageBlock = document.createElement('div');
-  messageBlock.style.textAlign = 'center';
-  messageBlock.style.marginBottom = MARGIN_FOR_TEXT + 'px';
+  messageBlock.classList.add('reviews-nothing-to-show');
   messageBlock.innerHTML = 'К сожалению, ничего не найдено';
   placeToPut.appendChild(messageBlock);
 }
@@ -107,53 +114,59 @@ function appendReviewElement(element, container) {
 }
 
 //
-function setFiltrationEnabled(unfilteredReviews) {
+function setFiltrationEnabled() {
   var filters = document.querySelectorAll('[name="reviews"]');
-  for (var i = 0; i < filters.length; i++) {
+  var filtersLength = filters.length;
+  for (var i = 0; i < filtersLength; i++) {
     filters[i].onclick = function() {
-      setFilterEnabled(this.id, unfilteredReviews);
+      setFilterEnabled(this.id, reviews);
     };
   }
 }
 //
-function setFilterEnabled(filter, initReviews) {
-  var filteredReviews = getFiltredReviews(filter, initReviews);
+function setFilterEnabled(filter) {
+  var filteredReviews = getFiltredReviews(filter, reviews);
   renderReviews(filteredReviews, reviewList);
 }
 
-function getFiltredReviews(filterName, firstReviews) {
-  var reviewsToFilter = firstReviews.slice(0);
+function getFiltredReviews(filterName, initReviews) {
+  var reviewsToFilter = initReviews.slice(0);
+  var filteredReviews;
+  var MARK_TO_BE_GOOD = 3;
   switch (filterName) {
-    case 'reviews-good':
-      reviewsToFilter = reviewsToFilter.filter(function(review) {
-        return (review.rating >= 3) ? true : false;
+    case Filter.GOOD:
+      filteredReviews = reviewsToFilter.filter(function(review) {
+        return (review.rating >= MARK_TO_BE_GOOD);
       })
         .sort(function(a, b) {
           return b.rating - a.rating;
         });
       break;
-    case 'reviews-bad':
-      reviewsToFilter = reviewsToFilter.filter(function(review) {
-        return (review.rating < 3) ? true : false;
+    case Filter.BAD:
+      filteredReviews = reviewsToFilter.filter(function(review) {
+        return (review.rating < MARK_TO_BE_GOOD);
       })
         .sort(function(a, b) {
           return a.rating - b.rating;
         });
       break;
-    case 'reviews-popular':
-      reviewsToFilter = reviewsToFilter.sort(function(a, b) {
+    case Filter.POPULAR:
+      filteredReviews = reviewsToFilter.sort(function(a, b) {
         return b.review_usefulness - a.review_usefulness;
       });
       break;
-    case 'reviews-recent':
-      reviewsToFilter = reviewsToFilter.filter(function(review) {
-        var daysCountAfterReviewPosting = Math.ceil((new Date() - new Date(review.date)) / MULTY_TO_GET_DAYS);
-        return (daysCountAfterReviewPosting < DAYS_TO_BE_POPULAR) ? true : false;
+    case Filter.RECENT:
+      filteredReviews = reviewsToFilter.filter(function(review) {
+        var daysCountAfterReviewPosting = Math.ceil((new Date() - new Date(review.date)) / MILLISECONDS_IN_DAY);
+        return (daysCountAfterReviewPosting < DAYS_TO_BE_REVIEW_RECENT);
       })
         .sort(function(a, b) {
-          return (new Date(a.date) - new Date(b.date)) ? true : false;
+          return (new Date(a.date) - new Date(b.date));
         });
       break;
+    default:
+      filteredReviews = reviewsToFilter;
+      break;
   }
-  return reviewsToFilter;
+  return filteredReviews;
 }
