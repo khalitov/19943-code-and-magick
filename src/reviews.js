@@ -67,7 +67,7 @@ function renderReviews(reviewsArr, container) {
   container.innerHTML = '';
   if (reviewsArr.length !== 0) {
     reviewsArr.forEach(function(review) {
-      appendReviewElement(getReviewElem(review), container);
+      container.appendChild(getReviewElem(review));
     });
     filterBlock.classList.remove('invisible');
   } else {
