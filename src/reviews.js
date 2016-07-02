@@ -125,11 +125,11 @@ function setFiltrationEnabled() {
 }
 //
 function setFilterEnabled(filter) {
-  var filteredReviews = getFiltredReviews(filter, reviews);
+  var filteredReviews = getFilteredReviews(filter, reviews);
   renderReviews(filteredReviews, reviewList);
 }
 
-function getFiltredReviews(filterName, initReviews) {
+function getFilteredReviews(filterName, initReviews) {
   var reviewsToFilter = initReviews.slice(0);
   var filteredReviews;
   var MARK_TO_BE_GOOD = 3;
