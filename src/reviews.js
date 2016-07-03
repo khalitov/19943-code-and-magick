@@ -27,7 +27,7 @@ var messageBlock = document.createElement('div');
 var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
 var NOTHING_TO_SHOW_TEXT = 'К сожалению ничего не найдено';
 var NOTHING_TO_SHOW_CLASS = 'reviews-nothing-to-show';
-// showMoreReviewsBtn.classList.remove('invisible');
+
 
 showMoreReviewsBtn.addEventListener('click', function() {
   pageNumber++;
@@ -43,6 +43,9 @@ if ('content' in reviewTemplate) {
   elemToClone = reviewTemplate.children[0].cloneNode(true);
 }
 
+
+
+
 getReviews(function(loadedReviews) {
   reviews = loadedReviews;
   setFiltrationEnabled();
@@ -50,6 +53,11 @@ getReviews(function(loadedReviews) {
   showHideNothingToShowBtn();
   renderReviews(filteredReviews, reviewList, pageNumber);
 });
+
+
+
+
+
 
 function getReviews(callback) {
   var xhr = new XMLHttpRequest();
@@ -99,8 +107,6 @@ function renderReviews(reviewsArr, container, page) {
 
 function showHideNothingToShowBtn() {
   var numberOfAllPages = Math.floor(filteredReviews.length / PAGE_SIZE);
-  console.log(pageNumber);
-  console.log(numberOfAllPages);
   if (pageNumber === numberOfAllPages) {
     showMoreReviewsBtn.classList.add('invisible');
   } else {

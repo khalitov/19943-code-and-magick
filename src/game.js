@@ -68,6 +68,47 @@
     UP: 4,
     DOWN: 8
   };
+  var clouds = document.querySelector('.header-clouds');
+  var gameBlock = document.querySelector('header');
+  setScrollEvents();
+
+  function setScrollEvents() {
+    var THROTTLE_DELAY = 100;
+    var cloudsVisibleFlag = true;
+    var lastCall = Date.now();
+    window.addEventListener('scroll', function() {
+      if (Date.now() - lastCall > THROTTLE_DELAY) {
+        cloudsVisibleFlag = isCloudsVisible();
+        if (isGameVisible()) {
+          game.setGameStatus(Game.Verdict.PAUSE);
+        }
+        lastCall = Date.now();
+      }
+      if (cloudsVisibleFlag) {
+        moveClouds();
+      }
+    });
+  }
+
+  function isGameVisible() {
+    if (gameBlock.offsetHeight - window.pageYOffset < 0) {
+      return true;
+    }
+    return false;
+  }
+
+  function isCloudsVisible() {
+    if (clouds.offsetHeight - window.pageYOffset > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  function moveClouds() {
+    clouds.style.backgroundPosition = -window.pageYOffset + 'px';
+
+  }
+
 
   /**
    * Правила перерисовки объектов в зависимости от состояния игры.
