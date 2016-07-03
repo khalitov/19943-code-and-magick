@@ -163,16 +163,16 @@ function getFilteredReviews(filterName, initReviews) {
   switch (filterName) {
     case Filter.GOOD:
       filteredReviews = reviewsToFilter.filter(function(review) {
-          return (review.rating >= MARK_TO_BE_GOOD);
-        })
+        return (review.rating >= MARK_TO_BE_GOOD);
+      })
         .sort(function(a, b) {
           return b.rating - a.rating;
         });
       break;
     case Filter.BAD:
       filteredReviews = reviewsToFilter.filter(function(review) {
-          return (review.rating < MARK_TO_BE_GOOD);
-        })
+        return (review.rating < MARK_TO_BE_GOOD);
+      })
         .sort(function(a, b) {
           return a.rating - b.rating;
         });
@@ -184,9 +184,9 @@ function getFilteredReviews(filterName, initReviews) {
       break;
     case Filter.RECENT:
       filteredReviews = reviewsToFilter.filter(function(review) {
-          var daysCountAfterReviewPosting = Math.ceil((new Date() - new Date(review.date)) / MILLISECONDS_IN_DAY);
-          return (daysCountAfterReviewPosting < DAYS_TO_BE_REVIEW_RECENT);
-        })
+        var daysCountAfterReviewPosting = Math.ceil((new Date() - new Date(review.date)) / MILLISECONDS_IN_DAY);
+        return (daysCountAfterReviewPosting < DAYS_TO_BE_REVIEW_RECENT);
+      })
         .sort(function(a, b) {
           return (new Date(a.date) - new Date(b.date));
         });
