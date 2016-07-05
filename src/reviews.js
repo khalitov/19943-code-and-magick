@@ -1,5 +1,8 @@
 'use strict';
 
+(function() {
+var utils = require('./utilities');
+
 var filterBlock = document.querySelector('.reviews-filter');
 var reviewBlock = document.querySelector('.reviews');
 var reviewTemplate = document.getElementById('review-template');
@@ -23,11 +26,7 @@ var Filter = {
 };
 var PAGE_SIZE = 3;
 var pageNumber = 0;
-var messageBlock = document.createElement('div');
 var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
-var NOTHING_TO_SHOW_TEXT = 'К сожалению ничего не найдено';
-var NOTHING_TO_SHOW_CLASS = 'reviews-nothing-to-show';
-
 
 showMoreReviewsBtn.addEventListener('click', function() {
   pageNumber++;
@@ -36,12 +35,12 @@ showMoreReviewsBtn.addEventListener('click', function() {
 });
 
 filterBlock.classList.add('invisible');
-
-if ('content' in reviewTemplate) {
-  elemToClone = reviewTemplate.content.children[0].cloneNode(true);
-} else {
-  elemToClone = reviewTemplate.children[0].cloneNode(true);
-}
+utils.cloneTemplate();
+// if ('content' in reviewTemplate) {
+//   elemToClone = reviewTemplate.content.children[0].cloneNode(true);
+// } else {
+//   elemToClone = reviewTemplate.children[0].cloneNode(true);
+// }
 
 
 
@@ -53,10 +52,6 @@ getReviews(function(loadedReviews) {
   showHideNothingToShowBtn();
   renderReviews(filteredReviews, reviewList, pageNumber);
 });
-
-
-
-
 
 
 function getReviews(callback) {
@@ -98,9 +93,7 @@ function renderReviews(reviewsArr, container, page) {
     });
     filterBlock.classList.remove('invisible');
   } else {
-    if (!container.querySelector('.' + NOTHING_TO_SHOW_CLASS)) {
-      displayMessage(container);
-    }
+    utils.displayMessage(container);
   }
 }
 
@@ -113,11 +106,11 @@ function showHideNothingToShowBtn() {
   }
 }
 
-function displayMessage(placeToPut) {
-  messageBlock.classList.add(NOTHING_TO_SHOW_CLASS);
-  messageBlock.innerHTML = NOTHING_TO_SHOW_TEXT;
-  placeToPut.appendChild(messageBlock);
-}
+// function displayMessage(placeToPut) {
+//   messageBlock.classList.add(NOTHING_TO_SHOW_CLASS);
+//   messageBlock.innerHTML = NOTHING_TO_SHOW_TEXT;
+//   placeToPut.appendChild(messageBlock);
+// }
 
 function getReviewElem(data) {
   var element = elemToClone.cloneNode(true);
@@ -202,3 +195,4 @@ function getFilteredReviews(filterName, initReviews) {
   }
   return filteredReviews;
 }
+}) ();
