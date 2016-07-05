@@ -74,34 +74,26 @@
 
   function setScrollEvents() {
     var THROTTLE_DELAY = 100;
-    var cloudsVisibleFlag = true;
     var lastCall = Date.now();
     window.addEventListener('scroll', function() {
       if (Date.now() - lastCall > THROTTLE_DELAY) {
-        cloudsVisibleFlag = isCloudsVisible();
         if (isGameVisible()) {
           game.setGameStatus(Game.Verdict.PAUSE);
         }
         lastCall = Date.now();
       }
-      if (cloudsVisibleFlag) {
+      if (isCloudsVisible()) {
         moveClouds();
       }
     });
   }
 
   function isGameVisible() {
-    if (gameBlock.offsetHeight - window.pageYOffset < 0) {
-      return true;
-    }
-    return false;
+    return gameBlock.offsetHeight - window.pageYOffset < 0;
   }
 
   function isCloudsVisible() {
-    if (clouds.offsetHeight - window.pageYOffset > 0) {
-      return true;
-    }
-    return false;
+    return clouds.offsetHeight - window.pageYOffset > 0;
   }
 
   function moveClouds() {
