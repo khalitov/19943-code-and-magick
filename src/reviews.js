@@ -90,17 +90,14 @@ function renderReviews(reviewsArr, container, page) {
     });
     filterBlock.classList.remove('invisible');
   } else {
-    var nothingToShowPresence = container.querySelector('.' + NOTHING_TO_SHOW_CLASS);
-    if (!nothingToShowPresence) {
-      sayNothingToShow(container);
+    if (!container.querySelector('.' + NOTHING_TO_SHOW_CLASS)) {
+      displayMessage(container);
     }
   }
 }
 
 function showHideNothingToShowBtn() {
   var numberOfAllPages = Math.floor(filteredReviews.length / PAGE_SIZE);
-  console.log(pageNumber);
-  console.log(numberOfAllPages);
   if (pageNumber === numberOfAllPages) {
     showMoreReviewsBtn.classList.add('invisible');
   } else {
@@ -108,7 +105,7 @@ function showHideNothingToShowBtn() {
   }
 }
 
-function sayNothingToShow(placeToPut) {
+function displayMessage(placeToPut) {
   messageBlock.classList.add(NOTHING_TO_SHOW_CLASS);
   messageBlock.innerHTML = NOTHING_TO_SHOW_TEXT;
   placeToPut.appendChild(messageBlock);
