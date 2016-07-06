@@ -1,6 +1,7 @@
 'use strict';
 
 (function() {
+  var utils = require('./utilities');
   var browserCookies = require('browser-cookies');
   var form = document.querySelector('.review-form');
   var formContainer = document.querySelector('.overlay-container');
@@ -19,26 +20,16 @@
   var LOWEST_POSITIVE_MARK = 3;
   var STATUS_NON_DISPLAY = 'none';
   var STATUS_DISPLAY = 'inline-block';
-  var BIRTH_DAY = 29;
-  var BIRTH_MONTH = 7;
-  var defaultMark = reviewMarks[2];
 
-  function getExpireDate() {
-    var currentDate = new Date();
-    var NearestBirthDate = new Date(currentDate.getFullYear(), BIRTH_MONTH, BIRTH_DAY);
-    if (NearestBirthDate - currentDate > 0) {
-      NearestBirthDate.setFullYear(NearestBirthDate.getFullYear() - 1);
-    }
-    return new Date(2 * currentDate - NearestBirthDate);
-  }
+  var defaultMark = reviewMarks[2];
 
   form.onsubmit = function() {
     var checkedMark = document.querySelector('[name="review-mark"]:checked');
     browserCookies.set('checkedMark', checkedMark.value, {
-      expires: getExpireDate()
+      expires: utils.getExpireDate()
     });
     browserCookies.set('username', username.value, {
-      expires: getExpireDate()
+      expires: utils.getExpireDate()
     });
   };
 
