@@ -1,13 +1,14 @@
 'use strict';
 
-var Filter = require('./filter-type');
-var MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
+var consts = require('../consts');
+var Filter = consts.Filter;
+var MILLISECONDS_IN_DAY = consts.MILLISECONDS_IN_DAY;
+var MARK_TO_BE_GOOD = consts.MARK_TO_BE_GOOD;
 var DAYS_TO_BE_REVIEW_RECENT = 4;
 module.exports = {
   getFilteredReviews: function(filterName, initReviews) {
     var reviewsToFilter = initReviews.slice(0);
     var filteredReviews;
-    var MARK_TO_BE_GOOD = 3;
     switch (filterName) {
       case Filter.GOOD:
         filteredReviews = reviewsToFilter.filter(function(review) {

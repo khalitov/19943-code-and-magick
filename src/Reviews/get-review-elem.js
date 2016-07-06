@@ -1,7 +1,10 @@
 'use strict';
-var REVIEWS_LIST = '//o0.github.io/assets/json/reviews.json';
+
 var reviewBlock = document.querySelector('.reviews');
 var utils = require('../utilities');
+var consts = require('../consts');
+var REVIEWS_LIST = consts.REVIEWS_LIST;
+var reviewBlock = consts.reviewBlock;
 module.exports = {
   getReviews: function(callback) {
     var xhr = new XMLHttpRequest();

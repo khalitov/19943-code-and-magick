@@ -2,6 +2,7 @@
 
 (function() {
   var utils = require('./utilities');
+  var consts = require('./consts');
   var browserCookies = require('browser-cookies');
   var form = document.querySelector('.review-form');
   var formContainer = document.querySelector('.overlay-container');
@@ -17,9 +18,9 @@
   var submitButton = document.querySelector('.review-submit');
   var reviewMarks = document.querySelectorAll('[id^="review-mark"]');
   var reviewMarksLength = reviewMarks.length;
-  var LOWEST_POSITIVE_MARK = 3;
-  var STATUS_NON_DISPLAY = 'none';
-  var STATUS_DISPLAY = 'inline-block';
+  var LOWEST_POSITIVE_MARK = consts.LOWEST_POSITIVE_MARK;
+  var STATUS_NON_DISPLAY = consts.STATUS_NON_DISPLAY;
+  var STATUS_DISPLAY = consts.STATUS_DISPLAY;
 
   var defaultMark = reviewMarks[2];
 
