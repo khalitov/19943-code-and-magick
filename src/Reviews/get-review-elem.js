@@ -1,6 +1,6 @@
 'use strict';
 
-var reviewBlock = document.querySelector('.reviews');
+
 var utils = require('../utilities');
 var consts = require('../consts');
 var REVIEWS_LIST = consts.REVIEWS_LIST;
