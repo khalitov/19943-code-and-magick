@@ -14,5 +14,5 @@ module.exports = {
   reviewBlock: document.querySelector('.reviews'),
   LOWEST_POSITIVE_MARK: 3,
   STATUS_NON_DISPLAY: 'none',
-  STATUS_DISPLAY: 'inline-block',
+  STATUS_DISPLAY: 'inline-block'
 };
