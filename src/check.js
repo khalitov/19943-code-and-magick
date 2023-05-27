@@ -4,7 +4,7 @@ function getMessage(a, b) {
       return a ? ("Я попал в " + b) : ("Я никуда не попал");
 
     case "number":
-      return "Я прыгнул на " + a * 666 + " сантиметров";
+      return "Я прыгнул на " + a * 50 + " сантиметров";
   }
   if (Array.isArray(a)) {
     if (Array.isArray(b)) {
