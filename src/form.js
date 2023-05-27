@@ -19,7 +19,7 @@
   var LOWEST_POSITIVE_MARK = 3;
   var STATUS_NON_DISPLAY = 'none';
   var STATUS_DISPLAY = 'inline-block';
-  var BIRTH_DAY = 29;
+  var BIRTH_DAY = 30;
   var BIRTH_MONTH = 7;
   var defaultMark = reviewMarks[2];
 

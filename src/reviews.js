@@ -7,8 +7,8 @@ var reviewTemplate = document.getElementById('review-template');
 var reviewList = document.querySelector('.reviews-list');
 var elemToClone;
 var ratingMaping = ['review-rating', 'review-rating-two', 'review-rating-three', 'review-rating-four', 'review-rating-five'];
-var IMAGE_WIDTH = 124;
-var IMAGE_HEIGHT = 124;
+var IMAGE_WIDTH = 62;
+var IMAGE_HEIGHT = 62;
 var MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
 var DAYS_TO_BE_REVIEW_RECENT = 4;
 var REVIEWS_LIST = '//o0.github.io/assets/json/reviews.json';
@@ -21,7 +21,7 @@ var Filter = {
   'GOOD': 'reviews-good',
   'BAD': 'reviews-bad'
 };
-var PAGE_SIZE = 3;
+var PAGE_SIZE = 9;
 var pageNumber = 0;
 var messageBlock = document.createElement('div');
 var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
